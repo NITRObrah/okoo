@@ -1,6 +1,6 @@
 // Site configuration
-var sitename = "SiteGames"; 
-var subtext = "Play. Explore. Level Up.";
+var sitename = "Sight.w"; 
+var subtext = "desktop-bypasser is da goat.";
 
 import "/./config/custom.js";
 
