@@ -1,6 +1,6 @@
 // Site configuration
-var sitename = "Sight.w"; 
-var subtext = "desktop-bypasser is da goat.";
+var sitename = "sight.w"; 
+var subtext = "desktop_bypassers is the goat";
 
 import "/./config/custom.js";
 
@@ -56,29 +56,31 @@ document
   .addEventListener("input", handleSearchInput);
 
 document.getElementById("title").innerHTML = `${sitename}`;
-document.getElementById("subtitle").innerHTML = `${subtext}`;
+document.getElementById("subtitle").INNERHTML = `${subtext}`;
 
-// GREY Chrome OS Bottom Status Bar (ADDED ONLY)
+// GREY ChromeOS bottom bar with REAL battery
 function createChromeOSStatusBar() {
   const statusBar = document.createElement("div");
   statusBar.id = "chromeOSBar";
   statusBar.style.cssText = `
-    position: fixed; bottom: 0; left: 0; right: 0; height: 32px; 
+    position: fixed; bottom: 0; left: 0; right: 0; height: 32px;
     background: linear-gradient(180deg, #2a2a2a, #1e1e1e);
-    display: flex; justify-content: space-between; align-items: center; 
+    display: flex; justify-content: space-between; align-items: center;
     padding: 0 20px; z-index: 10000; font-family: 'Courier New', monospace;
     color: #d0d0d0; font-size: 12px; font-weight: 600;
     box-shadow: 0 -4px 20px rgba(0,0,0,0.8);
   `;
   
+  // Clock
   const clockDiv = document.createElement("div");
   clockDiv.id = "chromeClock";
   clockDiv.style.cssText = `
-    background: rgba(64, 64, 64, 0.6); padding: 4px 12px; 
-    border-radius: 6px; border: 1px solid rgba(160, 160, 160, 0.5);
+    background: rgba(64,64,64,0.6); padding: 4px 12px;
+    border-radius: 6px; border: 1px solid rgba(160,160,160,0.5);
   `;
   clockDiv.textContent = "--:--:--";
   
+  // Battery
   const batteryDiv = document.createElement("div");
   batteryDiv.id = "chromeBattery";
   batteryDiv.style.cssText = `display: flex; align-items: center; gap: 8px;`;
@@ -86,7 +88,7 @@ function createChromeOSStatusBar() {
   const batteryIcon = document.createElement("div");
   batteryIcon.id = "batteryIcon";
   batteryIcon.style.cssText = `
-    width: 22px; height: 12px; border: 2px solid #a0a0a0; 
+    width: 22px; height: 12px; border: 2px solid #a0a0a0;
     border-radius: 4px; position: relative; background: #151515;
   `;
   
@@ -99,7 +101,7 @@ function createChromeOSStatusBar() {
   
   const batteryText = document.createElement("span");
   batteryText.id = "batteryText";
-  batteryText.textContent = "87%";
+  batteryText.textContent = "??"; // Will update with real battery
   
   batteryIcon.appendChild(batteryFill);
   batteryDiv.appendChild(batteryIcon);
@@ -109,18 +111,27 @@ function createChromeOSStatusBar() {
   statusBar.appendChild(batteryDiv);
   document.body.appendChild(statusBar);
   
+  // Clock update
   function updateClock() {
     clockDiv.textContent = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'});
   }
   updateClock();
   setInterval(updateClock, 1000);
   
+  // REAL battery API (no fake 87%)
+  if ('getBattery' in navigator) {
+    navigator.getBattery().then(battery => {
+      function updateBattery() {
+        const level = Math.round(battery.level * 100);
+        batteryFill.style.width = level + "%";
+        batteryText.textContent = level + "%";
+      }
+      updateBattery();
+      battery.addEventListener('levelchange', updateBattery);
+    });
+  }
+  
   document.body.style.paddingBottom = "40px";
 }
 
 createChromeOSStatusBar();
-
-
-
-
-
