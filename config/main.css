@@ -3,19 +3,19 @@
 @import url("https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap");
 
 :root {
-  --background-color: #003ba8 !important;
+  --background-color: linear-gradient(135deg, #000000, #555555) !important;
   --text-color: white !important;
   --accent-color: #4b87f7 !important;
 }
-
 
 * {
   font-family: ubuntu;
   transition: all 0.3s ease;
 }
+
 /* General styles */
 body {
-  background-color: var(--background-color);
+  background: var(--background-color);
   color: var(--text-color);
   font-family: "ubuntu", sans-serif;
   margin: 0;
@@ -31,9 +31,9 @@ body {
   padding: 17px;
   box-sizing: border-box;
   margin-bottom: 20px;
-  width: 100%; /* Occupy full width */
-  max-width: 400px; /* Limit maximum width */
-  margin: 20px auto; /* Center horizontally */
+  width: 100%;
+  max-width: 400px;
+  margin: 20px auto;
   border-radius: 10px;
   border: none;
   font-size: 24px;
@@ -43,7 +43,7 @@ body {
   transition: all 0.3s ease-in-out;
 }
 #searchInput:focus {
-border: 3px solid var(--accent-color);
+  border: 3px solid var(--accent-color);
 }
 
 /* Games container styles */
@@ -51,17 +51,16 @@ border: 3px solid var(--accent-color);
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  padding: 0 20px; /* Add padding to the sides */
+  padding: 0 20px;
   box-sizing: border-box;
 }
 
 /* Game card styles */
 .game {
   margin: 10px;
-  
   text-align: center;
-  flex: 1 0 200px; /* Flexbox item properties */
-  max-width: 200px; /* Limit maximum width */
+  flex: 1 0 200px;
+  max-width: 200px;
   display: inline-block;
   margin: 10px;
   transition: transform 0.3s ease;
@@ -69,16 +68,15 @@ border: 3px solid var(--accent-color);
   border-radius: 10px;
 }
 .game:hover {
-  transform: scale(0.95); /* Scale up on hover */
+  transform: scale(0.95);
   border: 2px solid var(--accent-color);
-  
-  
 }
+
 /* Game image styles */
 .game img {
-  width: 100%; /* Occupy full width of container */
-  max-width: 100%; /* Ensure image does not exceed container width */
-  height: auto; /* Maintain aspect ratio */
+  width: 100%;
+  max-width: 100%;
+  height: auto;
   cursor: pointer;
   width: 200px;
   height: 200px;
@@ -95,35 +93,37 @@ border: 3px solid var(--accent-color);
 /* Responsive adjustments */
 @media only screen and (max-width: 600px) {
   .game {
-    flex-basis: calc(50% - 20px); /* Two games per row */
+    flex-basis: calc(50% - 20px);
   }
 }
 
 @media only screen and (max-width: 400px) {
   .game {
-    flex-basis: calc(100% - 20px); /* Single game per row */
+    flex-basis: calc(100% - 20px);
   }
 }
+
 .center {
   justify-content: center;
   text-align: center;
   display: flex;
   flex-direction: column;
 }
+
 @media only screen and (max-width: 450px) {
   #searchInput {
     width: 200px;
   }
 }
+
 .footer {
   margin: 10px auto;
   bottom: 0;
   justify-content: center;
   text-align: center;
   align-items: center;
-
-
 }
+
 .link {
   color: var(--accent-color);
   text-decoration: none;
