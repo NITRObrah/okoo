@@ -1,6 +1,16 @@
 // Site configuration
 var sitename = "sight.w"; 
 var subtext = "desktop_bypassers is the goat";
+let loadCount = localStorage.getItem('loadCount') ? parseInt(localStorage.getItem('loadCount')) : 0;
+localStorage.setItem('loadCount', loadCount + 1);
+
+const loadingMessages = [
+  "DESKTOP DA GOAT GUUYYYYYSS",
+  "man fuck infamous there site dont even work🥀", 
+  "what even is math i though it was for cooking and counting money🫥",
+  "beluga wrost framer",
+  "pizzaa😋:"
+];
 
 import "/./config/custom.js";
 
@@ -9,6 +19,77 @@ var currentPageTitle = document.title;
 document.title = `${currentPageTitle} | ${sitename}`;
 let gamesData = []; 
 
+// Rotating loading screen with animation
+function showLoadingScreen() {
+  const loader = document.createElement("div");
+  loader.id = "pageLoader";
+  loader.style.cssText = `
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(45deg, #2a2a2a, #1e1e1e); z-index: 99999;
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    color: #d0d0d0; font-family: 'Courier New', monospace; font-size: 24px;
+    font-weight: 700; text-align: center; padding: 0 20px;
+  `;
+  
+  const spinner = document.createElement("div");
+  spinner.style.cssText = `
+    width: 60px; height: 60px; border: 4px solid rgba(160,160,160,0.3);
+    border-top: 4px solid #a0a0a0; border-radius: 50%;
+    animation: spin 1s linear infinite; margin-bottom: 30px;
+  `;
+  
+  const message = document.createElement("div");
+  message.textContent = loadingMessages[loadCount % loadingMessages.length];
+  message.style.cssText = `
+    animation: bounce 1.5s infinite; text-shadow: 0 0 20px rgba(160,160,160,0.8);
+    font-size: clamp(18px, 4vw, 28px); line-height: 1.4;
+  `;
+  
+  const progressBar = document.createElement("div");
+  progressBar.style.cssText = `
+    width: 300px; height: 6px; background: rgba(64,64,64,0.6);
+    border-radius: 3px; margin-top: 30px; overflow: hidden;
+  `;
+  
+  const progressFill = document.createElement("div");
+  progressFill.style.cssText = `
+    height: 100%; width: 0%; background: linear-gradient(90deg, #a0a0a0, #c0c0c0);
+    border-radius: 3px; animation: loadProgress 2.5s ease-out forwards;
+    box-shadow: 0 0 10px rgba(160,160,160,0.6);
+  `;
+  
+  progressBar.appendChild(progressFill);
+  spinner.id = "spinner";
+  message.id = "loadMessage";
+  loader.appendChild(spinner);
+  loader.appendChild(message);
+  loader.appendChild(progressBar);
+  document.body.appendChild(loader);
+  
+  // Add animations
+  const style = document.createElement("style");
+  style.textContent = `
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    @keyframes bounce { 0%, 20%, 50%, 80%, 100% { transform: translateY(0); } 
+                      40% { transform: translateY(-10px); } 60% { transform: translateY(-5px); } }
+    @keyframes loadProgress { 0% { width: 0%; } 100% { width: 100%; } }
+  `;
+  document.head.appendChild(style);
+  
+  return loader;
+}
+
+// Hide loading with animation
+function hideLoading(loader) {
+  loader.style.opacity = "0";
+  loader.style.transform = "scale(0.8)";
+  loader.style.transition = "all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)";
+  setTimeout(() => loader.remove(), 800);
+}
+
+const loader = showLoadingScreen();
+
+// Rest of your code...
 function displayFilteredGames(filteredGames) {
   const gamesContainer = document.getElementById("gamesContainer");
   gamesContainer.innerHTML = ""; 
@@ -47,9 +128,13 @@ fetch("./config/games.json")
   .then((response) => response.json())
   .then((data) => {
     gamesData = data;
-    displayFilteredGames(data); 
+    displayFilteredGames(data);
+    setTimeout(() => hideLoading(loader), 2500); // Hide after games load
   })
-  .catch((error) => console.error("Error fetching games:", error));
+  .catch((error) => {
+    console.error("Error fetching games:", error);
+    hideLoading(loader);
+  });
 
 document
   .getElementById("searchInput")
@@ -58,7 +143,7 @@ document
 document.getElementById("title").innerHTML = `${sitename}`;
 document.getElementById("subtitle").innerHTML = `${subtext}`;
 
-// REAL browser settings panel
+// Settings panel (unchanged from before)
 function createChromeOSStatusBar() {
   const statusBar = document.createElement("div");
   statusBar.id = "chromeOSBar";
@@ -107,7 +192,6 @@ function createChromeOSStatusBar() {
   statusBar.appendChild(rightDiv);
   document.body.appendChild(statusBar);
   
-  // Clock + FPS + Ping
   function updateClock() {
     clockDiv.textContent = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'});
   }
@@ -140,7 +224,6 @@ function createChromeOSStatusBar() {
   document.body.style.paddingBottom = "40px";
 }
 
-// REAL WORKING SETTINGS PANEL
 function toggleSettings() {
   let panel = document.getElementById("settingsPanel");
   if (panel) {
@@ -158,29 +241,24 @@ function toggleSettings() {
       box-shadow: 0 0 30px rgba(0,0,0,0.9);
     ">
       <h3 style="margin: 0 0 20px 0; font-size: 16px; border-bottom: 1px solid #555; padding-bottom: 10px;">⚙ Settings</h3>
-      
       <div style="margin-bottom: 15px;">
         <label>📱 Game Grid Size:</label><br>
         <input type="range" id="gridSize" min="1" max="6" value="3" step="1" style="width: 100%;">
         <span id="gridValue">3 per row</span>
       </div>
-      
       <div style="margin-bottom: 15px;">
         <label>🎮 Smooth Animations:</label><br>
         <input type="checkbox" id="smoothAnim" checked style="width: 20px; height: 20px; accent-color: #666;">
       </div>
-      
       <div style="margin-bottom: 15px;">
         <label>⚡ FPS Booster:</label><br>
         <input type="checkbox" id="fpsBoost" style="width: 20px; height: 20px; accent-color: #666;">
         <span>Lock 60 FPS</span>
       </div>
-      
       <div style="margin-bottom: 15px;">
         <label>🔇 Auto-Hide Bar:</label><br>
         <input type="checkbox" id="autoHideBar" style="width: 20px; height: 20px; accent-color: #666;">
       </div>
-      
       <div style="margin-bottom: 15px;">
         <label>📶 Network Quality:</label><br>
         <select id="netQuality" style="width: 100%; padding: 8px; background: #1e1e1e; color: #d0d0d0; border: 1px solid #555; border-radius: 4px;">
@@ -189,66 +267,10 @@ function toggleSettings() {
           <option value="high">High Quality</option>
         </select>
       </div>
-      
       <div style="margin-bottom: 15px;">
         <label>💾 Clear Cache:</label><br>
-        <button id="clearCache" style="width: 100%; padding: 8px; background: #444; color: #d0d0d0; border: none; border-radius: 4px; cursor: pointer;">Clear All</button>
-      </div>
-      
-      <button onclick="document.getElementById('settingsPanel').remove()" style="
-        width: 100%; padding: 12px; background: #555; color: #d0d0d0;
-        border: none; border-radius: 4px; cursor: pointer; font-weight: 600; font-size: 14px;
-      ">✕ Close</button>
-    </div>
-  `;
-  document.body.appendChild(panel);
-  
-  // Make settings WORK
-  document.getElementById("gridSize").oninput = function() {
-    const cols = this.value;
-    document.getElementById("gridValue").textContent = `${cols} per row`;
-    document.documentElement.style.setProperty('--game-cols', cols);
-  };
-  
-  document.getElementById("smoothAnim").onchange = function() {
-    document.body.style.transition = this.checked ? 'all 0.3s ease' : 'none';
-  };
-  
-  document.getElementById("fpsBoost").onchange = function() {
-    if (this.checked) {
-      console.log("🚀 FPS Booster: 60 FPS locked");
-    } else {
-      console.log("FPS Booster disabled");
-    }
-  };
-  
-  document.getElementById("autoHideBar").onchange = function() {
-    const bar = document.getElementById("chromeOSBar");
-    if (this.checked) {
-      bar.style.opacity = "0.3";
-      bar.onmouseenter = () => bar.style.opacity = "1";
-      bar.onmouseleave = () => bar.style.opacity = "0.3";
-    } else {
-      bar.style.opacity = "1";
-      bar.onmouseenter = null;
-      bar.onmouseleave = null;
-    }
-  };
-  
-  document.getElementById("netQuality").onchange = function() {
-    const quality = this.value;
-    console.log(`Network quality set to: ${quality}`);
-  };
-  
-  document.getElementById("clearCache").onclick = function() {
-    if (confirm("Clear all game cache?")) {
-      console.log("🗑️ Cache cleared!");
-      alert("Cache cleared successfully!");
-    }
-  };
-}
+        <button id="clearCache" style="width: 100%; padding: 8px; background: #444; color:
 
-createChromeOSStatusBar();
 
 
 
