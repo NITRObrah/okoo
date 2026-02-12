@@ -58,7 +58,7 @@ document
 document.getElementById("title").innerHTML = `${sitename}`;
 document.getElementById("subtitle").innerHTML = `${subtext}`;
 
-// FIXED GREY ChromeOS bar with REALISTIC battery drain
+// Settings + FPS + Ping Monitor (NO BATTERY)
 function createChromeOSStatusBar() {
   const statusBar = document.createElement("div");
   statusBar.id = "chromeOSBar";
@@ -80,47 +80,37 @@ function createChromeOSStatusBar() {
   `;
   clockDiv.textContent = "--:--:--";
   
-  // Battery
-  const batteryDiv = document.createElement("div");
-  batteryDiv.id = "chromeBattery";
-  batteryDiv.style.cssText = `display: flex; align-items: center; gap: 8px;`;
+  // Settings + FPS + Ping
+  const rightDiv = document.createElement("div");
+  rightDiv.style.cssText = `display: flex; align-items: center; gap: 15px;`;
   
-  const batteryIcon = document.createElement("div");
-  batteryIcon.id = "batteryIcon";
-  batteryIcon.style.cssText = `
-    width: 22px; height: 12px; border: 2px solid #a0a0a0;
-    border-radius: 4px; position: relative; background: #151515;
+  // Settings Button
+  const settingsBtn = document.createElement("div");
+  settingsBtn.id = "settingsBtn";
+  settingsBtn.textContent = "⚙";
+  settingsBtn.style.cssText = `
+    cursor: pointer; padding: 4px 8px; border-radius: 4px;
+    background: rgba(100,100,100,0.4); transition: all 0.2s;
   `;
+  settingsBtn.onclick = toggleSettings;
   
-  const batteryFill = document.createElement("div");
-  batteryFill.id = "batteryFill";
-  batteryFill.style.cssText = `
-    position: absolute; top: 2px; left: 2px; bottom: 2px; right: 2px;
-    border-radius: 2px; transition: all 0.4s ease; background: #c0c0c0;
-  `;
+  // FPS Display
+  const fpsDiv = document.createElement("div");
+  fpsDiv.id = "fpsDisplay";
+  fpsDiv.textContent = "FPS: 60";
   
-  const batteryText = document.createElement("span");
-  batteryText.id = "batteryText";
-  batteryText.textContent = "100%";
+  // Ping Display
+  const pingDiv = document.createElement("div");
+  pingDiv.id = "pingDisplay";
+  pingDiv.textContent = "Ping: 25ms";
   
-  batteryIcon.appendChild(batteryFill);
-  batteryDiv.appendChild(batteryIcon);
-  batteryDiv.appendChild(batteryText);
+  rightDiv.appendChild(settingsBtn);
+  rightDiv.appendChild(fpsDiv);
+  rightDiv.appendChild(pingDiv);
   
   statusBar.appendChild(clockDiv);
-  statusBar.appendChild(batteryDiv);
+  statusBar.appendChild(rightDiv);
   document.body.appendChild(statusBar);
-  
-  // Realistic battery simulation (65-100%, drains slowly)
-  let batteryLevel = 92; // Start realistic
-  function updateBattery() {
-    // Drain 0.1-0.3% every 30 seconds (realistic)
-    batteryLevel = Math.max(25, batteryLevel - Math.random() * 0.2);
-    batteryFill.style.width = batteryLevel + "%";
-    batteryText.textContent = Math.round(batteryLevel) + "%";
-  }
-  updateBattery();
-  setInterval(updateBattery, 30000); // Update every 30 seconds
   
   // Clock
   function updateClock() {
@@ -129,8 +119,92 @@ function createChromeOSStatusBar() {
   updateClock();
   setInterval(updateClock, 1000);
   
+  // FPS Counter
+  let lastTime = performance.now();
+  let frameCount = 0;
+  function updateFPS() {
+    const now = performance.now();
+    frameCount++;
+    if (now >= lastTime + 1000) {
+      const fps = Math.round((frameCount * 1000) / (now - lastTime));
+      document.getElementById("fpsDisplay").textContent = `FPS: ${fps}`;
+      frameCount = 0;
+      lastTime = now;
+    }
+    requestAnimationFrame(updateFPS);
+  }
+  updateFPS();
+  
+  // Ping simulation
+  let pingBase = 25;
+  function updatePing() {
+    const ping = Math.max(10, pingBase + Math.floor(Math.random() * 20) - 10);
+    document.getElementById("pingDisplay").textContent = `Ping: ${ping}ms`;
+  }
+  updatePing();
+  setInterval(updatePing, 2000);
+  
   document.body.style.paddingBottom = "40px";
 }
 
+// Settings Panel
+function toggleSettings() {
+  let panel = document.getElementById("settingsPanel");
+  if (panel) {
+    panel.remove();
+    return;
+  }
+  
+  panel = document.createElement("div");
+  panel.id = "settingsPanel";
+  panel.innerHTML = `
+    <div style="
+      position: fixed; top: 20%; right: 20px; width: 280px; background: #2a2a2a;
+      border: 1px solid #555; border-radius: 8px; padding: 20px; z-index: 10001;
+      color: #d0d0d0; font-family: 'Courier New', monospace; font-size: 13px;
+      box-shadow: 0 0 30px rgba(0,0,0,0.8);
+    ">
+      <h3 style="margin: 0 0 15px 0; font-size: 16px;">Settings</h3>
+      
+      <div style="margin-bottom: 15px;">
+        <label>Theme:</label><br>
+        <select id="themeSelect" style="width: 100%; padding: 8px; background: #1e1e1e; color: #d0d0d0; border: 1px solid #555; border-radius: 4px;">
+          <option value="grey">Grey</option>
+          <option value="dark">Dark</option>
+          <option value="matrix">Matrix</option>
+        </select>
+      </div>
+      
+      <div style="margin-bottom: 15px;">
+        <label>FPS Booster:</label><br>
+        <input type="checkbox" id="fpsBooster" style="width: 20px; height: 20px; accent-color: #888;">
+        <span>Enable (60 FPS Lock)</span>
+      </div>
+      
+      <button onclick="this.parentElement.parentElement.remove()" style="
+        width: 100%; padding: 10px; background: #555; color: #d0d0d0;
+        border: none; border-radius: 4px; cursor: pointer; font-weight: 600;
+      ">Close</button>
+    </div>
+  `;
+  document.body.appendChild(panel);
+  
+  // Theme changer
+  document.getElementById("themeSelect").onchange = function() {
+    const theme = this.value;
+    document.body.style.background = theme === "dark" ? "#000" : 
+                                    theme === "matrix" ? "#0a0a0a" : 
+                                    "linear-gradient(135deg, #000000, #555555)";
+  };
+  
+  // FPS Booster (fake but looks cool)
+  document.getElementById("fpsBooster").onchange = function() {
+    if (this.checked) {
+      console.log("FPS Booster: 60 FPS locked");
+    }
+  };
+}
+
 createChromeOSStatusBar();
+
 
