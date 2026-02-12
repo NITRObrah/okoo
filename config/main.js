@@ -1,7 +1,7 @@
 // This changes the title and branding of your site
 
 var sitename = "SiteGames "; // Updated site name with a cool emoji accent
-var subtext = "mathpunch da goat🐐."; // Catchy tagline under the title
+var subtext = "desktop-bypassers da goat🐐."; // Catchy tagline under the title
 
 // more settings in main.css
 
