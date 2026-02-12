@@ -1,6 +1,6 @@
 // Site configuration
-var sitename = "SiteGames"; 
-var subtext = "Play. Explore. Level Up.";
+var sitename = "SiteGames.W"; 
+var subtext = "DESKTOP_BYPASER is the goat🐐.";
 var logoUrl = "https://cdn.discordapp.com/attachments/1466784080916910279/1471179193772675162/Screenshot_20260211-1120012.png?ex=698dfde4&is=698cac64&hm=27b6c612e971a2702ebaf155d7588759e7f57617c2c1bdd384462f24197ec189";
 
 import "/./config/custom.js";
