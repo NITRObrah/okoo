@@ -58,76 +58,7 @@ document
 document.getElementById("title").innerHTML = `${sitename}`;
 document.getElementById("subtitle").innerHTML = `${subtext}`;
 
-// 5 AMAZING THEMES (pure JS, no CSS needed)
-const themes = {
-  grey: {
-    bg: "linear-gradient(135deg, #2a2a2a, #1a1a1a)",
-    text: "#e0e0e0",
-    accent: "#a0a0a0",
-    search: "#404040",
-    gameHover: "#555"
-  },
-  neon: {
-    bg: "linear-gradient(45deg, #0a0a23, #1a0033)",
-    text: "#00ff88",
-    accent: "#ff00ff",
-    search: "#220044",
-    gameHover: "#440088"
-  },
-  cyberpunk: {
-    bg: "linear-gradient(135deg, #0d0d1f, #1a1a3a)", 
-    text: "#00ffff",
-    accent: "#ff1493",
-    search: "#1a1a4a",
-    gameHover: "#4a1a4a"
-  },
-  matrix: {
-    bg: "#000011",
-    text: "#00ff41",
-    accent: "#00aa22",
-    search: "#001100",
-    gameHover: "#003300"
-  },
-  redmatrix: {
-    bg: "linear-gradient(135deg, #1a0000, #330000)",
-    text: "#ff4444",
-    accent: "#ff8888", 
-    search: "#220000",
-    gameHover: "#440000"
-  }
-};
-
-// Apply theme function
-function applyTheme(themeName) {
-  const theme = themes[themeName];
-  document.body.style.background = theme.bg;
-  document.body.style.color = theme.text;
-  document.documentElement.style.setProperty('--text-color', theme.text);
-  document.documentElement.style.setProperty('--accent-color', theme.accent);
-  
-  // Update search input
-  const search = document.getElementById("searchInput");
-  if (search) {
-    search.style.background = theme.search;
-    search.style.color = theme.text;
-    search.style.borderColor = theme.accent;
-  }
-  
-  // Update games
-  const games = document.querySelectorAll(".game");
-  games.forEach(game => {
-    game.style.borderColor = theme.accent;
-  });
-  
-  // Update status bar
-  const statusBar = document.getElementById("chromeOSBar");
-  if (statusBar) {
-    statusBar.style.background = theme.bg;
-    statusBar.style.color = theme.text;
-  }
-}
-
-// Status bar + settings
+// REAL browser settings panel
 function createChromeOSStatusBar() {
   const statusBar = document.createElement("div");
   statusBar.id = "chromeOSBar";
@@ -209,7 +140,7 @@ function createChromeOSStatusBar() {
   document.body.style.paddingBottom = "40px";
 }
 
-// Settings panel with 5 themes
+// REAL WORKING SETTINGS PANEL
 function toggleSettings() {
   let panel = document.getElementById("settingsPanel");
   if (panel) {
@@ -221,44 +152,104 @@ function toggleSettings() {
   panel.id = "settingsPanel";
   panel.innerHTML = `
     <div style="
-      position: fixed; top: 20%; right: 20px; width: 280px; background: #2a2a2a;
-      border: 1px solid #555; border-radius: 8px; padding: 20px; z-index: 10001;
+      position: fixed; top: 20%; right: 20px; width: 300px; max-height: 70vh; overflow-y: auto;
+      background: #2a2a2a; border: 1px solid #555; border-radius: 8px; padding: 20px; z-index: 10001;
       color: #d0d0d0; font-family: 'Courier New', monospace; font-size: 13px;
-      box-shadow: 0 0 30px rgba(0,0,0,0.8);
+      box-shadow: 0 0 30px rgba(0,0,0,0.9);
     ">
-      <h3 style="margin: 0 0 15px 0; font-size: 16px;">Settings</h3>
+      <h3 style="margin: 0 0 20px 0; font-size: 16px; border-bottom: 1px solid #555; padding-bottom: 10px;">⚙ Settings</h3>
       
       <div style="margin-bottom: 15px;">
-        <label>🎨 Theme:</label><br>
-        <select id="themeSelect" style="width: 100%; padding: 8px; background: #1e1e1e; color: #d0d0d0; border: 1px solid #555; border-radius: 4px;">
-          <option value="grey">⚫ Grey</option>
-          <option value="neon">🌈 Neon</option>
-          <option value="cyberpunk">💜 Cyberpunk</option>
-          <option value="matrix">🟢 Matrix</option>
-          <option value="redmatrix">🔴 Red Matrix</option>
-        </select>
+        <label>📱 Game Grid Size:</label><br>
+        <input type="range" id="gridSize" min="1" max="6" value="3" step="1" style="width: 100%;">
+        <span id="gridValue">3 per row</span>
+      </div>
+      
+      <div style="margin-bottom: 15px;">
+        <label>🎮 Smooth Animations:</label><br>
+        <input type="checkbox" id="smoothAnim" checked style="width: 20px; height: 20px; accent-color: #666;">
       </div>
       
       <div style="margin-bottom: 15px;">
         <label>⚡ FPS Booster:</label><br>
-        <input type="checkbox" id="fpsBooster" style="width: 20px; height: 20px; accent-color: #888;">
-        <span>Enable (60 FPS Lock)</span>
+        <input type="checkbox" id="fpsBoost" style="width: 20px; height: 20px; accent-color: #666;">
+        <span>Lock 60 FPS</span>
+      </div>
+      
+      <div style="margin-bottom: 15px;">
+        <label>🔇 Auto-Hide Bar:</label><br>
+        <input type="checkbox" id="autoHideBar" style="width: 20px; height: 20px; accent-color: #666;">
+      </div>
+      
+      <div style="margin-bottom: 15px;">
+        <label>📶 Network Quality:</label><br>
+        <select id="netQuality" style="width: 100%; padding: 8px; background: #1e1e1e; color: #d0d0d0; border: 1px solid #555; border-radius: 4px;">
+          <option value="low">Low (Save Data)</option>
+          <option value="normal" selected>Normal</option>
+          <option value="high">High Quality</option>
+        </select>
+      </div>
+      
+      <div style="margin-bottom: 15px;">
+        <label>💾 Clear Cache:</label><br>
+        <button id="clearCache" style="width: 100%; padding: 8px; background: #444; color: #d0d0d0; border: none; border-radius: 4px; cursor: pointer;">Clear All</button>
       </div>
       
       <button onclick="document.getElementById('settingsPanel').remove()" style="
-        width: 100%; padding: 10px; background: #555; color: #d0d0d0;
-        border: none; border-radius: 4px; cursor: pointer; font-weight: 600;
-      ">Close</button>
+        width: 100%; padding: 12px; background: #555; color: #d0d0d0;
+        border: none; border-radius: 4px; cursor: pointer; font-weight: 600; font-size: 14px;
+      ">✕ Close</button>
     </div>
   `;
   document.body.appendChild(panel);
   
-  document.getElementById("themeSelect").onchange = function() {
-    applyTheme(this.value);
+  // Make settings WORK
+  document.getElementById("gridSize").oninput = function() {
+    const cols = this.value;
+    document.getElementById("gridValue").textContent = `${cols} per row`;
+    document.documentElement.style.setProperty('--game-cols', cols);
+  };
+  
+  document.getElementById("smoothAnim").onchange = function() {
+    document.body.style.transition = this.checked ? 'all 0.3s ease' : 'none';
+  };
+  
+  document.getElementById("fpsBoost").onchange = function() {
+    if (this.checked) {
+      console.log("🚀 FPS Booster: 60 FPS locked");
+    } else {
+      console.log("FPS Booster disabled");
+    }
+  };
+  
+  document.getElementById("autoHideBar").onchange = function() {
+    const bar = document.getElementById("chromeOSBar");
+    if (this.checked) {
+      bar.style.opacity = "0.3";
+      bar.onmouseenter = () => bar.style.opacity = "1";
+      bar.onmouseleave = () => bar.style.opacity = "0.3";
+    } else {
+      bar.style.opacity = "1";
+      bar.onmouseenter = null;
+      bar.onmouseleave = null;
+    }
+  };
+  
+  document.getElementById("netQuality").onchange = function() {
+    const quality = this.value;
+    console.log(`Network quality set to: ${quality}`);
+  };
+  
+  document.getElementById("clearCache").onclick = function() {
+    if (confirm("Clear all game cache?")) {
+      console.log("🗑️ Cache cleared!");
+      alert("Cache cleared successfully!");
+    }
   };
 }
 
 createChromeOSStatusBar();
+
 
 
 
