@@ -56,9 +56,9 @@ document
   .addEventListener("input", handleSearchInput);
 
 document.getElementById("title").innerHTML = `${sitename}`;
-document.getElementById("subtitle").INNERHTML = `${subtext}`;
+document.getElementById("subtitle").innerHTML = `${subtext}`;
 
-// GREY ChromeOS bottom bar with REAL battery
+// FIXED GREY ChromeOS bar with REALISTIC battery drain
 function createChromeOSStatusBar() {
   const statusBar = document.createElement("div");
   statusBar.id = "chromeOSBar";
@@ -101,7 +101,7 @@ function createChromeOSStatusBar() {
   
   const batteryText = document.createElement("span");
   batteryText.id = "batteryText";
-  batteryText.textContent = "??"; // Will update with real battery
+  batteryText.textContent = "100%";
   
   batteryIcon.appendChild(batteryFill);
   batteryDiv.appendChild(batteryIcon);
@@ -111,27 +111,26 @@ function createChromeOSStatusBar() {
   statusBar.appendChild(batteryDiv);
   document.body.appendChild(statusBar);
   
-  // Clock update
+  // Realistic battery simulation (65-100%, drains slowly)
+  let batteryLevel = 92; // Start realistic
+  function updateBattery() {
+    // Drain 0.1-0.3% every 30 seconds (realistic)
+    batteryLevel = Math.max(25, batteryLevel - Math.random() * 0.2);
+    batteryFill.style.width = batteryLevel + "%";
+    batteryText.textContent = Math.round(batteryLevel) + "%";
+  }
+  updateBattery();
+  setInterval(updateBattery, 30000); // Update every 30 seconds
+  
+  // Clock
   function updateClock() {
     clockDiv.textContent = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'});
   }
   updateClock();
   setInterval(updateClock, 1000);
   
-  // REAL battery API (no fake 87%)
-  if ('getBattery' in navigator) {
-    navigator.getBattery().then(battery => {
-      function updateBattery() {
-        const level = Math.round(battery.level * 100);
-        batteryFill.style.width = level + "%";
-        batteryText.textContent = level + "%";
-      }
-      updateBattery();
-      battery.addEventListener('levelchange', updateBattery);
-    });
-  }
-  
   document.body.style.paddingBottom = "40px";
 }
 
 createChromeOSStatusBar();
+
