@@ -58,7 +58,76 @@ document
 document.getElementById("title").innerHTML = `${sitename}`;
 document.getElementById("subtitle").innerHTML = `${subtext}`;
 
-// Settings + FPS + Ping Monitor (NO BATTERY)
+// 5 AMAZING THEMES (pure JS, no CSS needed)
+const themes = {
+  grey: {
+    bg: "linear-gradient(135deg, #2a2a2a, #1a1a1a)",
+    text: "#e0e0e0",
+    accent: "#a0a0a0",
+    search: "#404040",
+    gameHover: "#555"
+  },
+  neon: {
+    bg: "linear-gradient(45deg, #0a0a23, #1a0033)",
+    text: "#00ff88",
+    accent: "#ff00ff",
+    search: "#220044",
+    gameHover: "#440088"
+  },
+  cyberpunk: {
+    bg: "linear-gradient(135deg, #0d0d1f, #1a1a3a)", 
+    text: "#00ffff",
+    accent: "#ff1493",
+    search: "#1a1a4a",
+    gameHover: "#4a1a4a"
+  },
+  matrix: {
+    bg: "#000011",
+    text: "#00ff41",
+    accent: "#00aa22",
+    search: "#001100",
+    gameHover: "#003300"
+  },
+  redmatrix: {
+    bg: "linear-gradient(135deg, #1a0000, #330000)",
+    text: "#ff4444",
+    accent: "#ff8888", 
+    search: "#220000",
+    gameHover: "#440000"
+  }
+};
+
+// Apply theme function
+function applyTheme(themeName) {
+  const theme = themes[themeName];
+  document.body.style.background = theme.bg;
+  document.body.style.color = theme.text;
+  document.documentElement.style.setProperty('--text-color', theme.text);
+  document.documentElement.style.setProperty('--accent-color', theme.accent);
+  
+  // Update search input
+  const search = document.getElementById("searchInput");
+  if (search) {
+    search.style.background = theme.search;
+    search.style.color = theme.text;
+    search.style.borderColor = theme.accent;
+  }
+  
+  // Update games
+  const games = document.querySelectorAll(".game");
+  games.forEach(game => {
+    game.style.borderColor = theme.accent;
+  });
+  
+  // Update status bar
+  const statusBar = document.getElementById("chromeOSBar");
+  if (statusBar) {
+    statusBar.style.background = theme.bg;
+    statusBar.style.color = theme.text;
+  }
+}
+
+// Status bar + settings
 function createChromeOSStatusBar() {
   const statusBar = document.createElement("div");
   statusBar.id = "chromeOSBar";
@@ -71,7 +140,6 @@ function createChromeOSStatusBar() {
     box-shadow: 0 -4px 20px rgba(0,0,0,0.8);
   `;
   
-  // Clock
   const clockDiv = document.createElement("div");
   clockDiv.id = "chromeClock";
   clockDiv.style.cssText = `
@@ -80,26 +148,22 @@ function createChromeOSStatusBar() {
   `;
   clockDiv.textContent = "--:--:--";
   
-  // Settings + FPS + Ping
   const rightDiv = document.createElement("div");
   rightDiv.style.cssText = `display: flex; align-items: center; gap: 15px;`;
   
-  // Settings Button
   const settingsBtn = document.createElement("div");
   settingsBtn.id = "settingsBtn";
-  settingsBtn.textContent = "⚙";
+  settingsBtn.innerHTML = "⚙";
   settingsBtn.style.cssText = `
     cursor: pointer; padding: 4px 8px; border-radius: 4px;
     background: rgba(100,100,100,0.4); transition: all 0.2s;
   `;
   settingsBtn.onclick = toggleSettings;
   
-  // FPS Display
   const fpsDiv = document.createElement("div");
   fpsDiv.id = "fpsDisplay";
   fpsDiv.textContent = "FPS: 60";
   
-  // Ping Display
   const pingDiv = document.createElement("div");
   pingDiv.id = "pingDisplay";
   pingDiv.textContent = "Ping: 25ms";
@@ -112,14 +176,13 @@ function createChromeOSStatusBar() {
   statusBar.appendChild(rightDiv);
   document.body.appendChild(statusBar);
   
-  // Clock
+  // Clock + FPS + Ping
   function updateClock() {
     clockDiv.textContent = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'});
   }
   updateClock();
   setInterval(updateClock, 1000);
   
-  // FPS Counter
   let lastTime = performance.now();
   let frameCount = 0;
   function updateFPS() {
@@ -135,7 +198,6 @@ function createChromeOSStatusBar() {
   }
   updateFPS();
   
-  // Ping simulation
   let pingBase = 25;
   function updatePing() {
     const ping = Math.max(10, pingBase + Math.floor(Math.random() * 20) - 10);
@@ -147,7 +209,7 @@ function createChromeOSStatusBar() {
   document.body.style.paddingBottom = "40px";
 }
 
-// Settings Panel
+// Settings panel with 5 themes
 function toggleSettings() {
   let panel = document.getElementById("settingsPanel");
   if (panel) {
@@ -167,21 +229,23 @@ function toggleSettings() {
       <h3 style="margin: 0 0 15px 0; font-size: 16px;">Settings</h3>
       
       <div style="margin-bottom: 15px;">
-        <label>Theme:</label><br>
+        <label>🎨 Theme:</label><br>
         <select id="themeSelect" style="width: 100%; padding: 8px; background: #1e1e1e; color: #d0d0d0; border: 1px solid #555; border-radius: 4px;">
-          <option value="grey">Grey</option>
-          <option value="dark">Dark</option>
-          <option value="matrix">Matrix</option>
+          <option value="grey">⚫ Grey</option>
+          <option value="neon">🌈 Neon</option>
+          <option value="cyberpunk">💜 Cyberpunk</option>
+          <option value="matrix">🟢 Matrix</option>
+          <option value="redmatrix">🔴 Red Matrix</option>
         </select>
       </div>
       
       <div style="margin-bottom: 15px;">
-        <label>FPS Booster:</label><br>
+        <label>⚡ FPS Booster:</label><br>
         <input type="checkbox" id="fpsBooster" style="width: 20px; height: 20px; accent-color: #888;">
         <span>Enable (60 FPS Lock)</span>
       </div>
       
-      <button onclick="this.parentElement.parentElement.remove()" style="
+      <button onclick="document.getElementById('settingsPanel').remove()" style="
         width: 100%; padding: 10px; background: #555; color: #d0d0d0;
         border: none; border-radius: 4px; cursor: pointer; font-weight: 600;
       ">Close</button>
@@ -189,22 +253,12 @@ function toggleSettings() {
   `;
   document.body.appendChild(panel);
   
-  // Theme changer
   document.getElementById("themeSelect").onchange = function() {
-    const theme = this.value;
-    document.body.style.background = theme === "dark" ? "#000" : 
-                                    theme === "matrix" ? "#0a0a0a" : 
-                                    "linear-gradient(135deg, #000000, #555555)";
-  };
-  
-  // FPS Booster (fake but looks cool)
-  document.getElementById("fpsBooster").onchange = function() {
-    if (this.checked) {
-      console.log("FPS Booster: 60 FPS locked");
-    }
+    applyTheme(this.value);
   };
 }
 
 createChromeOSStatusBar();
+
 
 
