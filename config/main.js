@@ -1,18 +1,23 @@
-// Site configuration
+// This changes the title and branding of your site
 
-var sitename = "SiteGames"; 
-var subtext = "Play. Explore. Level Up.";
+var sitename = "SiteGames "; // Updated site name with a cool emoji accent
+var subtext = "Play. Explore. Level Up."; // Catchy tagline under the title
+
+// more settings in main.css
+
+// END CONFIG
+// DO NOT MODIFY IF YOU DO NOT KNOW WHAT YOU'RE DOING!
 
 import "/./config/custom.js";
 
 var serverUrl1 = "https://gms.parcoil.com";
 var currentPageTitle = document.title;
-document.title = `${currentPageTitle} | ${sitename}`;
-let gamesData = [];
+document.title = `${currentPageTitle} | ${sitename}`; // Dynamic page title
+let gamesData = []; 
 
 function displayFilteredGames(filteredGames) {
   const gamesContainer = document.getElementById("gamesContainer");
-  gamesContainer.innerHTML = "";
+  gamesContainer.innerHTML = ""; 
 
   filteredGames.forEach((game) => {
     const gameDiv = document.createElement("div");
@@ -42,11 +47,11 @@ function handleSearchInput() {
   displayFilteredGames(filteredGames);
 }
 
-fetch("./config/games.json")
+fetch("./config/games.json") 
   .then((response) => response.json())
   .then((data) => {
     gamesData = data;
-    displayFilteredGames(data);
+    displayFilteredGames(data); 
   })
   .catch((error) => console.error("Error fetching games:", error));
 
@@ -54,4 +59,3 @@ document.getElementById("searchInput").addEventListener("input", handleSearchInp
 
 document.getElementById("title").innerHTML = `${sitename}`;
 document.getElementById("subtitle").innerHTML = `${subtext}`;
-
