@@ -1,6 +1,6 @@
 // Site configuration
 
-var sitename = "SiteGames ⚡"; 
+var sitename = "SiteGames"; 
 var subtext = "Play. Explore. Level Up.";
 
 import "/./config/custom.js";
@@ -54,3 +54,4 @@ document.getElementById("searchInput").addEventListener("input", handleSearchInp
 
 document.getElementById("title").innerHTML = `${sitename}`;
 document.getElementById("subtitle").innerHTML = `${subtext}`;
+
