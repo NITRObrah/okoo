@@ -1,130 +1,72 @@
-// Custom site scripts
+// COOL SNOW LOADING SCREEN (starts on page load)
+let loadProgress = 0;
+const loader = document.createElement("div");
+loader.id = "snowLoader";
+loader.style.cssText = `
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background: linear-gradient(135deg, #000000, #111111, #222222);
+  display: flex; flex-direction: column; justify-content: center; align-items: center;
+  color: #4b87f7; font-family: ubuntu; z-index: 99999;
+  text-align: center; transition: opacity 1s ease;
+`;
 
-document.addEventListener("DOMContentLoaded", () => {
+loader.innerHTML = `
+  <div style="margin-bottom: 30px;">
+    <i class="fas fa-gamepad" style="font-size: 64px; animation: bounce 1.5s infinite; color: #4b87f7;"></i>
+    <h2 style="font-size: 32px; margin: 20px 0 10px; font-weight: 700;">Games Hub</h2>
+  </div>
+  <div class="snow-loader" style="position: relative; width: 200px; height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px; overflow: hidden;">
+    <div class="progress-bar" style="position: absolute; top: 0; left: 0; height: 100%; width: 0%; background: linear-gradient(90deg, #4b87f7, #ffffff); border-radius: 2px; transition: width 0.3s ease;"></div>
+  </div>
+  <div style="margin-top: 20px; font-size: 14px; opacity: 0.8;">❄️ Loading winter games... ❄️</div>
+`;
 
-  // Smooth scroll to top
-  const scrollToTop = document.createElement("button");
-  scrollToTop.innerHTML = "↑";
-  scrollToTop.id = "scrollTopButton";
-  document.body.appendChild(scrollToTop);
-
-  scrollToTop.style.position = "fixed";
-  scrollToTop.style.bottom = "25px";
-  scrollToTop.style.right = "25px";
-  scrollToTop.style.padding = "10px 15px";
-  scrollToTop.style.background = "#4b87f7";
-  scrollToTop.style.color = "white";
-  scrollToTop.style.border = "none";
-  scrollToTop.style.borderRadius = "5px";
-  scrollToTop.style.cursor = "pointer";
-  scrollToTop.style.opacity = "0";
-  scrollToTop.style.transition = "opacity 0.3s ease";
-  scrollToTop.style.zIndex = "9999";
-
-  window.addEventListener("scroll", () => {
-    if (window.scrollY > 300) {
-      scrollToTop.style.opacity = "1";
-    } else {
-      scrollToTop.style.opacity = "0";
-    }
-  });
-
-  scrollToTop.addEventListener("click", () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  });
-
-  // Dark mode toggle
-  const darkModeToggle = document.createElement("button");
-  darkModeToggle.textContent = "🌓";
-  darkModeToggle.id = "darkModeToggle";
-  darkModeToggle.style.position = "fixed";
-  darkModeToggle.style.top = "20px";
-  darkModeToggle.style.right = "25px";
-  darkModeToggle.style.padding = "8px 12px";
-  darkModeToggle.style.background = "#333";
-  darkModeToggle.style.color = "white";
-  darkModeToggle.style.border = "none";
-  darkModeToggle.style.borderRadius = "5px";
-  darkModeToggle.style.cursor = "pointer";
-  darkModeToggle.style.zIndex = "10000";
-  document.body.appendChild(darkModeToggle);
-
-  darkModeToggle.addEventListener("click", () => {
-    document.body.classList.toggle("dark-mode");
-    if (document.body.classList.contains("dark-mode")) {
-      document.body.style.background = "linear-gradient(135deg, #111111, #333333)";
-      document.body.style.color = "#ffffff";
-    } else {
-      document.body.style.background = "linear-gradient(135deg, #000000, #555555)";
-      document.body.style.color = "white";
-    }
-  });
-
-  // Fade-in effect for game cards
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add("visible");
-      }
-    });
-  }, { threshold: 0.1 });
-
-  const games = document.querySelectorAll(".game");
-  games.forEach((game) => {
-    game.style.opacity = "0";
-    game.style.transform = "translateY(20px)";
-    game.style.transition = "all 0.6s ease-out";
-    observer.observe(game);
-  });
-
-  // Add visible class for smooth animation
-  const style = document.createElement("style");
-  style.innerHTML = `
-    .game.visible {
-      opacity: 1 !important;
-      transform: translateY(0) !important;
-    }
-  `;
-  document.head.appendChild(style);
-
-  // Floating title animation
-  const title = document.getElementById("title");
-  if (title) {
-    title.animate([
-      { transform: "translateY(0px)" },
-      { transform: "translateY(-8px)" },
-      { transform: "translateY(0px)" }
-    ], {
-      duration: 3000,
-      iterations: Infinity,
-      easing: "ease-in-out"
-    });
+// Add animations
+const style = document.createElement("style");
+style.innerHTML = `
+  @keyframes bounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-10px); }
+    60% { transform: translateY(-5px); }
   }
+  @keyframes snowfall-loader {
+    0% { transform: translateY(-100%) rotate(0deg); opacity: 0; }
+    50% { opacity: 1; }
+    100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+  }
+  .snow-loader-flake {
+    position: absolute; color: #4b87f7; font-size: 16px;
+    animation: snowfall-loader 3s linear infinite;
+  }
+`;
+document.head.appendChild(style);
 
-  // Loading effect for games
-  window.addEventListener("load", () => {
-    const loader = document.createElement("div");
-    loader.id = "pageLoader";
-    loader.style.position = "fixed";
-    loader.style.top = "0";
-    loader.style.left = "0";
-    loader.style.width = "100%";
-    loader.style.height = "100%";
-    loader.style.background = "black";
-    loader.style.display = "flex";
-    loader.style.justifyContent = "center";
-    loader.style.alignItems = "center";
-    loader.style.color = "white";
-    loader.style.fontSize = "24px";
-    loader.style.zIndex = "99999";
-    loader.innerHTML = "Loading Games...";
-    document.body.appendChild(loader);
+// Add floating snowflakes to loader
+for (let i = 0; i < 15; i++) {
+  const flake = document.createElement("i");
+  flake.className = "fas fa-snowflake snow-loader-flake";
+  flake.style.left = Math.random() * 100 + "%";
+  flake.style.animationDelay = Math.random() * 3 + "s";
+  flake.style.animationDuration = (3 + Math.random() * 2) + "s";
+  loader.appendChild(flake);
+}
 
-    setTimeout(() => {
-      loader.style.opacity = "0";
-      loader.style.transition = "opacity 0.6s ease";
-      setTimeout(() => loader.remove(), 600);
-    }, 1200);
-  });
-});
+document.body.appendChild(loader);
 
+// Animated progress bar
+const progressBar = loader.querySelector(".progress-bar");
+const progressInterval = setInterval(() => {
+  loadProgress += Math.random() * 15;
+  if (loadProgress > 95) loadProgress = 95;
+  progressBar.style.width = loadProgress + "%";
+}, 150);
+
+// Hide loader after 4 seconds
+setTimeout(() => {
+  clearInterval(progressInterval);
+  progressBar.style.width = "100%";
+  loader.style.opacity = "0";
+  setTimeout(() => {
+    loader.remove();
+  }, 1000);
+}, 4000);
