@@ -44,10 +44,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // === SINGLE CUSTOM LOADING ICON ===
+  // === SINGLE PLANET "sight.w" LOADING ICON AT TOP ===
   let loadProgress = 0;
   const loader = document.createElement("div");
-  loader.id = "customLoader";
+  loader.id = "planetLoader";
   loader.style.cssText = `
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background: linear-gradient(135deg, #1a0033, #330066, #440088);
@@ -56,8 +56,43 @@ document.addEventListener("DOMContentLoaded", () => {
     text-align: center; transition: opacity 1s ease;
   `;
 
-  loader.innerHTML = `
-    <div style="margin-bottom: 30px;">
+  // Planet container positioned at TOP
+  const planetContainer = document.createElement("div");
+  planetContainer.style.cssText = `
+    position: absolute; top: 80px; left: 50%; transform: translateX(-50%);
+    width: 120px; height: 120px; z-index: 100000;
+  `;
+  loader.appendChild(planetContainer);
+
+  // PLANET with "sight.w" text
+  const planet = document.createElement("div");
+  planet.style.cssText = `
+    width: 100%; height: 100%;
+    background: radial-gradient(circle at 30% 30%, #aa66ff, #6633cc 40%, #440088 70%, #1a0033);
+    border-radius: 50%; 
+    position: relative;
+    animation: planet-spin 2s linear infinite, planet-float 3s ease-in-out infinite;
+    box-shadow: 
+      0 0 30px #aa66ff, 
+      inset 0 0 30px rgba(255,255,255,0.1);
+    border: 3px solid rgba(170,102,255,0.6);
+  `;
+
+  // "sight.w" text on planet
+  const planetText = document.createElement("div");
+  planetText.innerHTML = "sight.w";
+  planetText.style.cssText = `
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-20deg);
+    color: #ff99ff; font-family: 'Arial Black', sans-serif; font-size: 16px; font-weight: 900;
+    text-shadow: 0 0 10px #aa66ff, 2px 2px 4px rgba(0,0,0,0.8);
+    letter-spacing: 2px; text-transform: uppercase;
+  `;
+  planet.appendChild(planetText);
+  planetContainer.appendChild(planet);
+
+  // Title + Progress below planet
+  loader.innerHTML += `
+    <div style="margin-top: 160px;">
       <h2 style="font-size: 32px; margin: 20px 0 10px; font-weight: 700; color: #ffffff; text-shadow: 0 0 15px #aa66ff;">SIGHT.W Games</h2>
     </div>
     <div class="progress-loader" style="position: relative; width: 200px; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden; box-shadow: 0 0 10px rgba(170,102,255,0.3);">
@@ -66,26 +101,16 @@ document.addEventListener("DOMContentLoaded", () => {
     <div style="margin-top: 20px; font-size: 14px; opacity: 0.9; color: #ddbbff;">loading sum games🤯</div>
   `;
 
-  // SINGLE CUSTOM LOADING ICON
-  const customIcon = document.createElement("img");
-  customIcon.src = "https://image2url.com/r2/default/images/1772159975561-dad0dfc6-d3f7-4562-abe5-8eb545d730f8.png";
-  customIcon.style.cssText = `
-    position: absolute; width: 80px; height: 80px;
-    animation: spin 1.5s linear infinite, float 2s ease-in-out infinite;
-    filter: drop-shadow(0 0 20px #aa66ff);
-  `;
-  loader.appendChild(customIcon);
-
-  // Custom spin + float animations
+  // Planet animations
   const loaderStyle = document.createElement("style");
   loaderStyle.innerHTML = `
-    @keyframes spin {
+    @keyframes planet-spin {
       0% { transform: rotate(0deg) scale(1); }
       100% { transform: rotate(360deg) scale(1); }
     }
-    @keyframes float {
-      0%, 100% { transform: translateY(0px) rotate(0deg); }
-      50% { transform: translateY(-10px) rotate(180deg); }
+    @keyframes planet-float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-8px); }
     }
   `;
   document.head.appendChild(loaderStyle);
