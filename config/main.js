@@ -44,10 +44,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // === DISCORD-STYLE SPINNING GAMEPADS LOADING SCREEN ===
+  // === SINGLE CUSTOM LOADING ICON ===
   let loadProgress = 0;
   const loader = document.createElement("div");
-  loader.id = "gamepadLoader";
+  loader.id = "customLoader";
   loader.style.cssText = `
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background: linear-gradient(135deg, #1a0033, #330066, #440088);
@@ -58,7 +58,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   loader.innerHTML = `
     <div style="margin-bottom: 30px;">
-      <i class="fas fa-gamepad" style="font-size: 64px; animation: bounce 1.5s infinite; color: #aa66ff; text-shadow: 0 0 20px #aa66ff;"></i>
       <h2 style="font-size: 32px; margin: 20px 0 10px; font-weight: 700; color: #ffffff; text-shadow: 0 0 15px #aa66ff;">SIGHT.W Games</h2>
     </div>
     <div class="progress-loader" style="position: relative; width: 200px; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden; box-shadow: 0 0 10px rgba(170,102,255,0.3);">
@@ -67,44 +66,29 @@ document.addEventListener("DOMContentLoaded", () => {
     <div style="margin-top: 20px; font-size: 14px; opacity: 0.9; color: #ddbbff;">loading sum games🤯</div>
   `;
 
-  // Discord-style spinning gamepad animations
+  // SINGLE CUSTOM LOADING ICON
+  const customIcon = document.createElement("img");
+  customIcon.src = "https://image2url.com/r2/default/images/1772159975561-dad0dfc6-d3f7-4562-abe5-8eb545d730f8.png";
+  customIcon.style.cssText = `
+    position: absolute; width: 80px; height: 80px;
+    animation: spin 1.5s linear infinite, float 2s ease-in-out infinite;
+    filter: drop-shadow(0 0 20px #aa66ff);
+  `;
+  loader.appendChild(customIcon);
+
+  // Custom spin + float animations
   const loaderStyle = document.createElement("style");
   loaderStyle.innerHTML = `
-    @keyframes bounce {
-      0%, 20%, 50%, 80%, 100% { transform: translateY(0) scale(1); }
-      40% { transform: translateY(-12px) scale(1.05); }
-      60% { transform: translateY(-6px) scale(1.02); }
-    }
-    @keyframes discord-spin {
-      0% { transform: rotate(0deg) scale(1); opacity: 0.7; }
-      50% { transform: rotate(180deg) scale(1.2); opacity: 1; }
-      100% { transform: rotate(360deg) scale(1); opacity: 0.7; }
+    @keyframes spin {
+      0% { transform: rotate(0deg) scale(1); }
+      100% { transform: rotate(360deg) scale(1); }
     }
     @keyframes float {
-      0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-15px); }
-    }
-    .gamepad-loader {
-      position: absolute; color: #aa66ff; font-size: 24px;
-      text-shadow: 0 0 12px #aa66ff;
-      animation: discord-spin 2s linear infinite, float 3s ease-in-out infinite;
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-10px) rotate(180deg); }
     }
   `;
   document.head.appendChild(loaderStyle);
-
-  // 12 Spinning gamepad icons (Discord-style)
-  for (let i = 0; i < 12; i++) {
-    const gamepad = document.createElement("i");
-    gamepad.className = "fas fa-gamepad gamepad-loader";
-    gamepad.style.cssText = `
-      left: ${15 + Math.random() * 70}%;
-      top: ${25 + Math.random() * 50}%;
-      animation-delay: ${Math.random() * 2}s, ${Math.random() * 3}s;
-      animation-duration: ${1.5 + Math.random() * 1}s, ${2.5 + Math.random() * 2}s;
-      font-size: ${18 + Math.random() * 12}px;
-    `;
-    loader.appendChild(gamepad);
-  }
 
   document.body.prepend(loader);
 
